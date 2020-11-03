@@ -1,6 +1,5 @@
 import csv
 import pandas as pd
-from IPython.display import HTML
 
 def apply(in_path, out_path, row_transform, add_cols=[], delimiter=",", quotechar='"'):
     with open(out_path, "w+", newline="") as out_f: 
@@ -14,10 +13,7 @@ def apply(in_path, out_path, row_transform, add_cols=[], delimiter=",", quotecha
 def csv2df(csv_path):
     return pd.read_csv(csv_path)
 
-def show_df(df):
-    return HTML(df.to_html())
-
-def csv_strip_cols(in_path, out_path, cols=[], delimiter=",", quotechar='"'):
+def strip_cols(in_path, out_path, cols=[], delimiter=",", quotechar='"'):
     with open(out_path, "w+", newline="") as out_f: 
         with open(in_path, newline="") as in_f:
             reader = csv.DictReader(in_f, delimiter=delimiter, quotechar=quotechar)
