@@ -1,0 +1,49 @@
+version: '3'
+services:
+  database:
+    image: mariadb
+    restart: unless-stopped
+    volumes:
+      - "{DATA_DIR}:/data"
+      - database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: {DB_PASSWORD}
+    ports:
+      - {DB_PORT}:3306
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - {ADMINER_PORT}:8080
+  jupyter:
+    build: 
+      context: build/jupyter
+    restart: unless-stopped
+    ports:
+      - {NOTEBOOK_PORT}:8888
+    user: root
+    working_dir: "/home/{USER}"
+    environment:
+      NB_USER: {USER}
+      NB_UID: {UID}
+      CHOWN_HOME: "yes"
+      CHOWN_HOME_OPTS: "-R"
+    volumes:
+      - notebooks:/home/{USER}/work/notebooks
+      - "{DATA_DIR}:/home/{USER}/work/data"
+  chowner:
+    build:
+      context: build/chowner
+    environment:
+      USER: {USER}
+      USER_ID: {UID}
+    volumes: 
+      - notebooks:/chown/notebooks
+    links: 
+      - jupyter
+
+volumes:
+  database:
+    driver: local
+  notebooks:
+    driver: local
